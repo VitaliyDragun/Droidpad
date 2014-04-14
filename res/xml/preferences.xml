@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#d3d3d3" >
+
+    <views.CustomPreferenceCategory android:title="General settings" >
+        <CheckBoxPreference
+            android:key="launch_app_with_new_note"
+            android:title="Start new note at launch " />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="ask_before_exit"
+            android:title="Ask before exit " />
+
+        <ListPreference
+            android:defaultValue="100"
+            android:entries="@array/single_tap_default_action"
+            android:entryValues="@array/single_tap_default_actionValues"
+            android:key="open_note__view_mode"
+            android:title="Open note in... " />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:disableDependentsState="false"
+            android:key="enable sound effects"
+            android:title="Enable sound effects " />
+    </views.CustomPreferenceCategory>
+        
+    <views.CustomPreferenceCategory android:title="Security" >
+        <views.DialogChangePassword
+            android:dialogIcon="@drawable/lock_48"
+            android:key="password"
+            android:negativeButtonText="Discard"
+            android:positiveButtonText="Change"
+            android:summary="Default:1111"
+            android:title="Change password " />
+    </views.CustomPreferenceCategory>
+    <views.CustomPreferenceCategory android:title="Backup" >
+        <views.DialogCreateBackup
+            android:key="create_backup"
+            android:negativeButtonText="Discard"
+            android:positiveButtonText="Proceed"
+            android:title="Create Backup " />
+
+        <views.DialogLoadBackup
+            android:key="load_backup"
+            android:negativeButtonText="Discard"
+            android:positiveButtonText="Proceed"
+            android:title="Load Backup " />
+    </views.CustomPreferenceCategory>
+
+</PreferenceScreen>

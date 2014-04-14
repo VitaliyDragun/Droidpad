@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">droidpad_2nd_edition</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_create_note">CreateNoteActivity</string>
+    <string name="title_activity_items_list">ItemsListActivity</string>
+    <string name="title_activity_preferences">PreferencesActivity</string>
+    <string name="title_activity_help">HelpActivity</string>
+    <string name="title_activity_exit">ExitActivity</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_new">New</string>
+    <string name="menu_manage">Manage</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_exit">Exit</string>
+    <string name="new_note_placeholder">Type here</string>
+    <string name="menu_open">Open</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_title">Title</string>
+    <string name="menu_delete">Delete</string>
+    <string name="delete_dialog_title">Are you sure?</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="rename_dialog_title">Change title</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="title_activity_open_note">OpenNote</string>
+    <string name="title_activity_edit_note">EditNoteActivity</string>
+    <string name="options">Options</string>
+    <string name="title_activity_new_note">NewNoteActivity</string>
+    <string name="title_activity_note_list">NoteListActivity</string>
+    <string name="list_activity_title">Notes</string>
+    <string name="edit_button">Edit</string>
+    <string name="untitled">Untitled</string>
+    <string name="title_activity_folder">FolderActivity</string>
+    <string name="create_note_help1">After you finished typping press back button to create the note. You can add your own title by tapping on inscription \"tap to add title\", in opposit case the title will be generated automatically and will consist of first 30 characters of your note. </string>
+    <string name="create_note_help2">Bar at the buttom allows you to customize the note appearance, all the setting are saved automatically, so the next time you create or view a note it will look the same.</string>
+    <string name="create_note_help3">You can also switch between normal and fullscreen modes by pressing the menu button or if your device doesn\'t have one you can enable/disable the fullscreen mode swyping from the top right to the buttom left or in opposit direction</string>
+    <string name="create_note_help4">If you don\'t want to save your note you have to delete it manually by pressing the delete button on top bar.</string>
+	<string name="create_note_help5"> Every note as well as folder within the same folder must have unique names. You can\'t create two entities under the same name.</string>
+    <string name="list_activity_help1">Note list appearance can be customized. Press back button to open slide out menu than choose between big, medium and small rows. Slide out menu allows you to set ordering of your notes, search and create new folder. Search function can also be activated by pressing hardware search button on your phone. To exit search mode press hardware search button again or press back button or tap on exit button on the top bar on  the screen. If there are notes in some locked folder they will not be displayed.</string>
+    <string name="list_activity_help2">Long tap on a note or a folder enables context menu dialog that allows you to perform operations on those entities such as deletion, setting the password or changing its priority.</string>         
+	<string name="change_password_help">You can lock notes and folders using password. The default password is 1111. You can change it in the settings tab but the new one has to be strictly 4 characters long and must contain alpabet characters or numbers.</string>
+	<string name="backup_help">I would highly recommend doing backup from time to time to ensure your data is safe as this is just the first version of application so it may contain bugs. What backup function does is it creates text files which are located in the folder named \"My Notes BACKUP\" in the root catalogue of your SD-card. It make them easy to view or modify on your PC using Windows WordPad for example. After that you can load created backup using corresponding function in settings. For both create and load backup functions the password is required. Do not create files in \"My Notes BACKUP\" folder of any types except unicode text files. If you do otherwise it will crash the application and you will need to clean its data to make it running again.</string>
+	<string name="create_backup_dialog">WARNING!!!\nPrevious backup will be erased if you proceed</string>
+    <string name="load_backup_dialog">WARNING!!!\nAll existing notes and folders will be deleted after you proceed</string>
+    <string name="viewing_and_editing_notes">You can open note in 2 modes: view or edit. You can instantly switch between them by pressing button in top left corner of your screen after you have opened the note. Edit mode allows you to change note itself as well as its title, while view modes lets switch between adjasent notes in the same folder (locked ones will be skiped) by swiping to the left or to the right. You can enable/disable fullscreen mode using hardware menu button or swiping from the top left to the buttom right or in opposit direction. Button in the top right corner allows you to delete the current note.</string>
+    
+
+</resources>

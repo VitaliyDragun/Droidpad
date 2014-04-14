@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item_child"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/creating_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Creating notes"
+        android:textColor="#002545"
+        android:textSize="19sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/create_note_help1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/create_note_help1"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/create_note_help2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/create_note_help2"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/create_note_help3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/create_note_help3"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/create_note_help4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/create_note_help4"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/create_note_help5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/create_note_help5"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/managing_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Managing notes"
+        android:textColor="#002545"
+        android:textSize="19sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/manage_notes1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/list_activity_help1"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/manage_notes2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/list_activity_help2"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+    
+    <TextView
+        android:id="@+id/viewing_and_editing_notes_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Viewing and Editing notes"
+        android:textColor="#002545"
+        android:textSize="19sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/viewing_and_editing_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/viewing_and_editing_notes"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/changing_password_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Changing password"
+        android:textColor="#002545"
+        android:textSize="19sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/changing_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/change_password_help"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/making_backup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Using backup"
+        android:textColor="#002545"
+        android:textSize="19sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/making_backup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/backup_help"
+        android:textColor="#002545"
+        android:textSize="14sp" />
+
+</LinearLayout>

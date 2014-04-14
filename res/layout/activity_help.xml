@@ -1,0 +1,33 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HelpActivity" >
+    <TextView
+        android:id="@+id/help_activity_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#002545"
+        android:text="Help"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:paddingLeft="14dp"
+        android:paddingBottom="2dp"
+        android:paddingTop="3dp"
+         />
+    <ExpandableListView
+        android:id="@+id/expandable_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/help_activity_title"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:cacheColorHint="#00000000"
+        android:listSelector="@android:color/transparent"
+        android:transcriptMode="disabled" 
+        android:layout_centerHorizontal="true"
+        android:paddingTop="5dp"
+        />
+</RelativeLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#002545" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include
+            android:id="@+id/item_delete"
+            layout="@layout/context_menu_row" />
+
+        <include
+            android:id="@+id/item_change_title"
+            layout="@layout/context_menu_row" />
+
+        <include
+            android:id="@+id/item_set_delete_password"
+            layout="@layout/context_menu_row" />
+
+        <include
+            android:id="@+id/item_set_priority"
+            layout="@layout/context_menu_row" />
+    </LinearLayout>
+
+</ScrollView>

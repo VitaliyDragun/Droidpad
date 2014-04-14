@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string-array name="single_tap_default_action">
+    	<item name="enable_edit_mode">Edit mode</item>
+    	<item name="enable_view_mode">View mode</item>
+    </string-array>
+    
+    <string-array name="single_tap_default_actionValues">
+        <item name="enable_edit_mode">100</item>
+        <item name="enable_view_mode">200</item>
+    </string-array>
+</resources>
