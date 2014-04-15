@@ -2,8 +2,9 @@ package presenters;
 
 import java.util.List;
 
+import structures.Item;
+
 import logic.ItemsManager;
-import database.Item;
 
 public class ItemListPresenter
 {

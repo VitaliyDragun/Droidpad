@@ -6,6 +6,7 @@ import java.util.List;
 
 import presenters.ItemListPresenter;
 import presenters.ItemListPresenter.OnAnimationEndListener;
+import structures.Item;
 import vitaliy.dragun.droidpad_2nd_edition.Colors;
 import vitaliy.dragun.droidpad_2nd_edition.R;
 import android.app.AlertDialog;
@@ -44,8 +45,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import database.Item;
-import database.Note;
 
 public class ItemListActivity extends ListActivity implements Colors
 {
@@ -190,7 +189,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		AlertDialog.Builder builder = new AlertDialog.Builder ( this );
 		builder.setIcon ( R.drawable.icon_pack_delete );
 
-		if (items.get ( pressedItemIndex ).type == Item.Type.FOLDER)
+		if (items.get ( pressedItemIndex ).getType() == Item.Type.FOLDER)
 			builder.setTitle ( "Delete folder and all its content?" );
 		else
 			builder.setTitle ( "Delete note?" );
@@ -199,7 +198,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		{
 			public void onClick ( DialogInterface dialog, int whichButton )
 			{
-				if (items.get ( pressedItemIndex ).isProtected == 1)
+				if (items.get ( pressedItemIndex ).getIsProtected () == true)
 					showEnterPasswordDialog ( EnterPasswordMode.DELETE_MODE );
 				else
 					deleteEntry ();
@@ -304,12 +303,12 @@ public class ItemListActivity extends ListActivity implements Colors
 	private void setPassword ()
 	{
 		Item newNote = items.get ( pressedItemIndex );
-		newNote.isProtected = 1;
+		newNote.setIsProtected (true);
 
 		addAndSortItems ();
 
 		Toast toast = Toast.makeText ( ItemListActivity.this, "", Toast.LENGTH_SHORT );
-		if (items.get ( pressedItemIndex ).type == Item.Type.FOLDER)
+		if (items.get ( pressedItemIndex ).getType () == Item.Type.FOLDER)
 			toast.setText ( "Folder is locked".toString () );
 		else
 			toast.setText ( "Note is locked".toString () );
@@ -320,12 +319,12 @@ public class ItemListActivity extends ListActivity implements Colors
 	private void deletePassword ()
 	{
 		Item newNote = items.get ( pressedItemIndex );
-		newNote.isProtected = 0;
+		newNote.setIsProtected (false);
 
 		addAndSortItems ();
 
 		Toast toast = Toast.makeText ( ItemListActivity.this, "", Toast.LENGTH_SHORT );
-		if (items.get ( pressedItemIndex ).type == Item.Type.FOLDER)
+		if (items.get ( pressedItemIndex ).getType() == Item.Type.FOLDER)
 			toast.setText ( "Folder is unlocked".toString () );
 		else
 			toast.setText ( "Note is unlocked".toString () );
@@ -565,7 +564,7 @@ public class ItemListActivity extends ListActivity implements Colors
 				@Override
 				public void onClick ( DialogInterface dialog, int which )
 				{
-					Note newNote = new Note ();
+					Item newNote = new Item ();
 
 					EditText editText = (EditText) dialogView.findViewById ( R.id.rename_text_field );
 
@@ -621,7 +620,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			builder.setView ( myView );
 
 			final EditText editText = (EditText) myView.findViewById ( R.id.rename_text_field );
-			editText.setText ( items.get ( pressedItemIndex ).title );
+			editText.setText ( items.get ( pressedItemIndex ).getTitle() );
 
 			editText.selectAll ();
 
@@ -782,7 +781,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			AlertDialog.Builder builder = new AlertDialog.Builder ( ItemListActivity.this );
 			builder.setIcon ( R.drawable.icon_pack_delete );
 
-			if (items.get ( pressedItemIndex ).type == Item.Type.FOLDER)
+			if (items.get ( pressedItemIndex ).getType() == Item.Type.FOLDER)
 				builder.setTitle ( "Delete folder and all its content?" );
 			else
 				builder.setTitle ( "Delete note?" );
@@ -873,7 +872,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			{
 				folderViewHolder = (FolderViewHolder) convertView.getTag ();
 
-				int priority = items.get ( position ).priority;
+				int priority = items.get ( position ).getPriority();
 				switch (priority)
 				{
 				case Item.PRIORITY_NORMAL:
@@ -889,9 +888,9 @@ public class ItemListActivity extends ListActivity implements Colors
 					folderViewHolder.numberOfNotes.setTextColor ( Color.parseColor ( redColor ) );
 				}
 
-				folderViewHolder.title.setText ( item.title + " " );
+				folderViewHolder.title.setText ( item.getTitle() + " " );
 
-				if (item.isProtected != 1)
+				if (item.getIsProtected() != true)
 					folderViewHolder.lock.setVisibility ( View.INVISIBLE );
 				else
 					folderViewHolder.lock.setVisibility ( View.VISIBLE );
@@ -900,7 +899,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			{
 				noteViewHolder = (NoteViewHolder) convertView.getTag ();
 
-				int priority = items.get ( position ).priority;
+				int priority = items.get ( position ).getPriority();
 
 				switch (priority)
 				{
@@ -940,13 +939,13 @@ public class ItemListActivity extends ListActivity implements Colors
 						noteViewHolder.note.setBackgroundResource ( R.drawable.high_priority_note_icon_56 );
 				}
 
-				noteViewHolder.title.setText ( item.title + " " );
+				noteViewHolder.title.setText ( item.getTitle() + " " );
 
-				String date = item.date.substring ( 5, 7 ) + "." + item.date.substring ( 8, 10 ) + " " + item.date.substring ( 11, 16 ) + " ";
+				String date = item.getDate().substring ( 5, 7 ) + "." + item.getDate().substring ( 8, 10 ) + " " + item.getDate().substring ( 11, 16 ) + " ";
 
 				noteViewHolder.date.setText ( date );
 
-				if (item.isProtected != 1)
+				if (item.getIsProtected() != true)
 					noteViewHolder.lock.setVisibility ( View.INVISIBLE );
 				else
 					noteViewHolder.lock.setVisibility ( View.VISIBLE );
@@ -962,7 +961,7 @@ public class ItemListActivity extends ListActivity implements Colors
 
 		public int getItemViewType ( int position )
 		{
-			if (items.get ( position ).type == Item.Type.NOTE)
+			if (items.get ( position ).getType() == Item.Type.NOTE)
 				return NOTE;
 			else
 				return FOLDER;
@@ -1096,7 +1095,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		{
 			pressedItemIndex = position;
 
-			if (items.get ( position ).isProtected == 1)
+			if (items.get ( position ).getIsProtected() == true)
 			{
 				AlertDialog.Builder builder = new AlertDialog.Builder ( ItemListActivity.this );
 
@@ -1163,7 +1162,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			contextMenu = new Dialog ( ItemListActivity.this, R.style.CustomDialogTheme );
 			contextMenu.requestWindowFeature ( Window.FEATURE_NO_TITLE );
 			
-			Item.Type type = items.get ( position ).type;
+			Item.Type type = items.get ( position ).getType();
 			if (type == Item.Type.NOTE)
 			{
 				dialogContent = getLayoutInflater ().inflate ( R.layout.dialog_note_context_menu, null );
@@ -1210,7 +1209,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			
 			icon = (ImageView) itemPassword.findViewById(R.id.icon);
 			
-			boolean isProtected = items.get(itemIndex).isProtected == 1;
+			boolean isProtected = items.get(itemIndex).getIsProtected() == true;
 			if (isProtected)
 				icon.setImageResource(R.drawable.icon_set_unlock);
 			else
@@ -1232,7 +1231,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			
 			text = (TextView) itemPassword.findViewById(R.id.text);
 			
-			boolean isProtected = items.get(itemIndex).isProtected == 1;
+			boolean isProtected = items.get(itemIndex).getIsProtected() == true;
 			if (isProtected)
 				text.setText("Delete Password");
 			else
@@ -1289,7 +1288,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			itemSend = (ViewGroup) dialogContent.findViewById ( R.id.item_send );
 			itemSend.setOnClickListener ( new OnClickListener (){ public void onClick ( View v )
 			{
-				String textToShare = ((Note) items.get ( itemIndex )).note;
+				String textToShare = ((Item) items.get ( itemIndex )).getNote();
 				mPresenter.onSend ( textToShare );
 			} });
 		}
