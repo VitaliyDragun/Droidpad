@@ -1,12 +1,16 @@
 package logic;
 
+import java.text.BreakIterator;
+
+import vitaliy.dragun.droidpad_2nd_edition.MyApplication;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 public class Preferences
 {
-	SharedPreferences preferences;
-	Editor editor;
+	SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());;
+	Editor editor = preferences.edit();
 	
 	public final static String SORT_TYPE = "Sort Type";
 	public final static String ALPHABETICALLY = "Alphabetically";
@@ -29,6 +33,9 @@ public class Preferences
 	public final static String EDIT_MODE = "Edit mode";
 	public final static String VIEW_MODE = "View mode";
 	
+	public enum SortType {ALPHABATICALLY, BY_DATE, BY_TYPE};
+	public enum RowSize {BIG, MEDIUM, SMALL};
+	
 	public boolean isSoundEnabled()
 	{
 		if ( preferences.getBoolean( ENABLE_SOUND_EFFECTS, false ) == true )
@@ -50,27 +57,63 @@ public class Preferences
 		editor.commit();
 	}
 	
-	public void setRowSize( String value )
+	public void setRowSize( RowSize rowSize )
 	{
-		if ( value == BIG || value == MEDIUM || value == SMALL )
+		switch (rowSize)
 		{
-			editor.putString( ROW_SIZE, value);
-			editor.commit();
+		case BIG:
+			editor.putString( ROW_SIZE, BIG);
+			break;
+		case MEDIUM:
+			editor.putString( ROW_SIZE, MEDIUM);
+			break;
+		case SMALL:
+			editor.putString( ROW_SIZE, SMALL);
 		}
+		
+		editor.commit();
 	}
 	
-	public String getRowSize() { return preferences.getString( ROW_SIZE, MEDIUM ); }
-	
-	public void setSortType(String value)
+	public RowSize getRowSize()
 	{
-		if (value == ALPHABETICALLY || value == BY_DATE || value == BY_TYPE)
-		{
-			editor.putString(SORT_TYPE, value);
-			editor.commit();
-		}
+		String returnedValue = preferences.getString( ROW_SIZE, MEDIUM );
+		
+		if (returnedValue.equals(BIG))
+			return RowSize.BIG;
+		else if (returnedValue.equals(MEDIUM))
+			return RowSize.MEDIUM;
+		else
+			return RowSize.SMALL;
 	}
 	
-	public String getSortType( String sortType ) { return preferences.getString( SORT_TYPE, sortType ); }
+	public void setSortType ( SortType sortType )
+	{
+		switch (sortType)
+		{
+		case BY_DATE:
+			editor.putString( SORT_TYPE, BY_DATE);
+			break;
+		case ALPHABATICALLY:
+			editor.putString( SORT_TYPE, ALPHABETICALLY);
+			break;
+		case BY_TYPE:
+			editor.putString( SORT_TYPE, BY_TYPE);
+		}
+		
+		editor.commit();
+	}
+	
+	public SortType getSortType() 
+	{
+		String returnedValue = preferences.getString( SORT_TYPE, "" );
+
+		if (returnedValue.equals(ALPHABETICALLY))
+			return SortType.ALPHABATICALLY;
+		else if (returnedValue.equals(BY_DATE))
+			return SortType.BY_DATE;
+		else
+			return SortType.BY_TYPE;
+	}
 	
 	public void setNoteOpenMode( String value )
 	{

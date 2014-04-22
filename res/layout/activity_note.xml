@@ -1,14 +1,73 @@
-<RelativeLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:isScrollContainer="true"
-    tools:context=".NoteActivity" >
+    tools:context=".CreateNoteActivity" >
 
     <RelativeLayout
-        android:id="@+id/title_bar"
+        android:id="@+id/open_note_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#002545" >
+
+        <ImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:background="#002545"
+            android:src="@drawable/edit_icon" />
+
+        <ImageButton
+            android:id="@+id/open_note_clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="#002545"
+            android:src="@drawable/icon_set_delete_40" />
+
+        <TextView
+            android:id="@+id/open_note_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toLeftOf="@id/open_note_clear_button"
+            android:layout_toRightOf="@id/edit_button"
+            android:clickable="true"
+            android:singleLine="true"
+            android:text="@string/untitled"
+            android:textSize="22sp" />
+
+        <view
+            android:id="@+id/open_note_add_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            class="views.CustomEditText"
+            android:hint="untitled"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/open_note_title_done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="#002545"
+            android:src="@drawable/check_icon"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/create_note_title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#002545" >
@@ -28,7 +87,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:clickable="true"
-            android:onClick="onTitleClick"
             android:text="tap to add title"
             android:textSize="22sp" />
 
@@ -61,10 +119,10 @@
 
     <RelativeLayout
         android:id="@+id/title_bar2"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#002545" >
+        android:background="#002545"
+        android:visibility="gone" >
 
         <ImageButton
             android:id="@+id/edit_button"
@@ -180,9 +238,9 @@
     <view
         android:id="@+id/new_note_edittext"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_above="@id/tool_bar"
-        android:layout_below="@id/title_bar"
+        android:layout_below="@id/create_note_title_bar"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         class="views.CustomEditText"

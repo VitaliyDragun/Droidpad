@@ -46,7 +46,7 @@
                 android:id="@+id/item_search"
                 layout="@layout/slide_out_menu_item" />
             
-            <include layout="@layout/line" />
+            <include layout="@layout/line_horizontal" />
 
             <include
                 android:id="@+id/item_new_folder"
@@ -60,13 +60,13 @@
                 android:id="@+id/item_sort_by_date"
                 layout="@layout/slide_out_menu_item" />
             
-            <include layout="@layout/line" />
+            <include layout="@layout/line_horizontal" />
 
             <include
                 android:id="@+id/item_sort_alphabetically"
                 layout="@layout/slide_out_menu_item" />
             
-            <include layout="@layout/line" />
+            <include layout="@layout/line_horizontal" />
 
             <include
                 android:id="@+id/item_sort_by_type"
@@ -80,13 +80,13 @@
                 android:id="@+id/item_view_big_rows"
                 layout="@layout/slide_out_menu_item" />
             
-            <include layout="@layout/line" />
+            <include layout="@layout/line_horizontal" />
 
             <include
                 android:id="@+id/item_view_medium_rows"
                 layout="@layout/slide_out_menu_item" />
             
-            <include layout="@layout/line" />
+            <include layout="@layout/line_horizontal" />
 
             <include
                 android:id="@+id/item_view_small_rows"

@@ -1,48 +1,35 @@
 package logic;
 
+import interfaces.ItemInterface;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import structures.Item;
 import structures.Item.Type;
 import vitaliy.dragun.droidpad_2nd_edition.MyApplication;
-import structures.Item;
-import database.NotesDataSource;
+import database.ItemsDatabase;
 
 public class ItemsManager
 {
 	private final String MAIN_FOLDER = "My Notes";
-
-	private List<Item> allItems = new ArrayList<Item>();
-	private List<Item> itemsToDisplay = new ArrayList<Item>();
-	private String currentFolder;
-
-	private Item selectedNote;
-
-	private NotesDataSource notesDataSource;
-
+	
 	public static String rootFolderTitle = "My Notes";
 	public static String backupFolderTitle = "My Notes BACKUP";
 	public static String selectedFolder = rootFolderTitle;
 
-	public List<Item> getItems ()
-	{
-		List <Item> itemsCopy = new ArrayList <Item> (itemsToDisplay);
-		return itemsCopy;
-	}
+	private List<Item> allItems = new ArrayList<Item>();
+	private List<Item> itemsToDisplay = new ArrayList<Item>();
+	
+	private Item currentFolder;		//If null then we are in root folder
 
-	private ItemsManager()
-	{
-		notesDataSource = new NotesDataSource( MyApplication.getAppContext() );
-		
-		notesDataSource.open();
-		
-		allItems.addAll( notesDataSource.getAllNotes() );
+	private Item selectedItem;
+	private int selectedItemIndex;
 
-		itemsToDisplay = allItems;
-	}
+	private ItemsDatabase notesDataSource;
 
 	private static ItemsManager instance = null;
 
@@ -55,6 +42,28 @@ public class ItemsManager
 
 		return instance;
 	}
+
+	private ItemsManager()
+	{
+		notesDataSource = new ItemsDatabase( MyApplication.getAppContext() );
+		
+		notesDataSource.open();
+		
+		allItems.addAll( notesDataSource.getAllNotes() );
+
+		itemsToDisplay = allItems;
+	}
+	
+	public List<ItemInterface> getItemsToDisplay ()
+	{
+		List <ItemInterface> copy = new ArrayList<ItemInterface> ();
+		
+		for (int i = 0; i < itemsToDisplay.size(); i++)
+			copy.add(itemsToDisplay.get(i));
+		
+		return copy;
+	}
+
 
 	public boolean isTitleUnique( final String title )
 	{
@@ -87,9 +96,9 @@ public class ItemsManager
 		}
 	}
 
-	public boolean changeSecureStatus(boolean protect, int index)
+	public void changeItemSecurityStatus()
 	{
-		return true;
+		selectedItem.setIsProtected( selectedItem.getIsProtected() ? false : true );
 	}
 
 	public void createFolder( String title )
@@ -98,7 +107,7 @@ public class ItemsManager
 
 		newFolder.setTitle(title);
 		newFolder.setType(Type.FOLDER);
-		newFolder.setLocationFolder(currentFolder);
+		newFolder.setLocationFolder(currentFolder.getTitle());
 		newFolder.setIsTitleAdded(true);
 		newFolder.setIsProtected(false);
 		newFolder.setPriority(0);
@@ -155,63 +164,59 @@ public class ItemsManager
 		return false;
 	}
 
-	public void deleteItem(int index)
+	public void deleteSelectedItem()
 	{
-		Item itemToDelete = itemsToDisplay.get (index);
+		itemsToDisplay.remove(selectedItem);
+		allItems.remove(selectedItem);
 		
-		notesDataSource.deleteNote ( (Item) itemToDelete );
-
-		itemsToDisplay.remove(index);
+		notesDataSource.deleteNote ( selectedItem );
 	}
 
-	public void changeItemTitle(String newTitle, int index)
+	public void changeSelectedItemTitle(String newTitle)
 	{
-		if (itemsToDisplay.get(index).getType() != Item.Type.NOTE)
+		if (selectedItem.getType() == Item.Type.NOTE)
 		{
-			Item note = (Item)itemsToDisplay.get( index );
-			note.setTitle(newTitle);
+			selectedItem.setTitle(newTitle);
 
-			notesDataSource.updateNote(note);
+			notesDataSource.updateNote(selectedItem);
 		}
+		//In case of when item is folder we must update all notes which belong to this folder as well
 		else
 		{
-			String notePrevTitle = itemsToDisplay.get( index ).getTitle();
-
-			Item folder = itemsToDisplay.get(index);
-			folder.setTitle(newTitle);
-
-			notesDataSource.updateNote(folder);
+			String previousTitle = selectedItem.getTitle();
+			selectedItem.setTitle(newTitle);
+			notesDataSource.updateNote(selectedItem);
+			
+			notesDataSource.updateNote(selectedItem);
 
 			for (int i = 0; i < allItems.size(); i++)
 			{
-				if (allItems.get(i).getLocationFolder().equals(notePrevTitle))
+				if (allItems.get(i).getLocationFolder().equals(previousTitle))
 				{
-					Item note = (Item)allItems.get(i);
+					Item note = allItems.get(i);
 					note.setLocationFolder(newTitle);
-					allItems.set(i, notesDataSource.updateNote(note));
+					
+					notesDataSource.updateNote(note);
 				}
 			}
 		}
 	}
 
-	public void setPriority (int priority, int itemIndex)
-	{
+	public void setSelectedItemPriority (int priority) { selectedItem.setPriority(priority); }
 
-	}
-
-	public boolean isItemProtected (int index)
+	public void openItem (int index, boolean isNote)
 	{
-		return true;
-	}
-
-	public boolean isNote (int index)
-	{
-		return true;
-	}
-
-	public boolean openFolder (int index)
-	{
-		return true;
+		Item itemToOpen = itemsToDisplay.get(index);
+		if (itemToOpen.getType() == Item.Type.NOTE)
+		{
+			selectedItem = itemToOpen;
+			isNote = true;
+		}
+		else
+		{
+			currentFolder = itemToOpen;
+			isNote = false;
+		}
 	}
 
 	public void updateItems()
@@ -219,23 +224,65 @@ public class ItemsManager
 
 	}
 
-	public void sortItems (String sortType)
+	public void sortItems (Preferences.SortType sortType)
 	{
-
+		Item.setSortType(sortType);
+		Collections.sort(itemsToDisplay);
 	}
 
-	public boolean editNote (String title, String text)
+	public void updateSelectedNote (String updatedNote)
 	{
-		return true;
+		selectedItem.setNote(updatedNote);
 	}
 
-	public Item getOpenedNote ()
+	public ItemInterface getSelectedItem ()
 	{
-		return selectedNote;
+		return selectedItem;
 	}
 
-	public void selectNote (int index)
+	public void selectItem (int index)
 	{
-		selectedNote = (Item) allItems.get(index);
+		selectedItemIndex = index;
+		selectedItem =  itemsToDisplay.get(index);
+		
+		if (selectedItem.getType() == Item.Type.FOLDER)
+		{
+			itemsToDisplay.removeAll(itemsToDisplay);
+			for (Item item : allItems)
+				if ( item.getLocationFolder ().equals (currentFolder.getTitle() ) )
+					itemsToDisplay.add(item);
+		}
+	}
+	
+	public boolean selectNextNote ()
+	{
+		for (int i = selectedItemIndex + 1; i < itemsToDisplay.size(); i++)
+		{
+			if (selectedItem.getType() == Item.Type.FOLDER || selectedItem.getIsProtected() == true)
+				continue;
+			else
+			{
+				selectedItemIndex = i;
+				selectedItem = itemsToDisplay.get(selectedItemIndex);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean selectPreviousNote ()
+	{
+		for (int i = selectedItemIndex - 1; i >= 0; i--)
+		{
+			if (selectedItem.getType() == Item.Type.FOLDER || selectedItem.getIsProtected() == true)
+				continue;
+			else
+			{
+				selectedItemIndex = i;
+				selectedItem = itemsToDisplay.get(selectedItemIndex);
+				return true;
+			}
+		}
+		return false;
 	}
 }

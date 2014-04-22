@@ -1,11 +1,15 @@
 package activities;
 
+import interfaces.CompletitionHandler;
+import interfaces.DialogActionsListener;
+import interfaces.ItemInterface;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import logic.Preferences;
 import presenters.ItemListPresenter;
-import presenters.ItemListPresenter.OnAnimationEndListener;
 import structures.Item;
 import vitaliy.dragun.droidpad_2nd_edition.Colors;
 import vitaliy.dragun.droidpad_2nd_edition.R;
@@ -63,14 +67,14 @@ public class ItemListActivity extends ListActivity implements Colors
 	private NoteAdapter noteAdapter;
 	private int pressedItemIndex = -1;
 
-	public List <Item> items = new ArrayList <Item> ();
+	public List <ItemInterface> items = new ArrayList <ItemInterface> ();
 
 	private enum RowSize
 	{
 		BIG, MEDIUM, SMALL
 	};
 
-	private RowSize rowSize = RowSize.MEDIUM;
+	//private RowSize rowSize = RowSize.MEDIUM;
 
 	private boolean searchMode = false;
 
@@ -110,9 +114,11 @@ public class ItemListActivity extends ListActivity implements Colors
 
 	private Toast mToast;
 	
-	private Dialog mDisplayingDialog;
+	private Dialog showedDialog;
 	
 	private SlideoutMenuInitializer slideoutMenuInitializer = new SlideoutMenuInitializer();
+	
+	private Preferences.RowSize rowSize;
 
 	private void connectAndSetupViews ()
 	{
@@ -302,8 +308,8 @@ public class ItemListActivity extends ListActivity implements Colors
 
 	private void setPassword ()
 	{
-		Item newNote = items.get ( pressedItemIndex );
-		newNote.setIsProtected (true);
+		ItemInterface newNote = items.get ( pressedItemIndex );
+		//newNote.setIsProtected (true);
 
 		addAndSortItems ();
 
@@ -318,8 +324,8 @@ public class ItemListActivity extends ListActivity implements Colors
 
 	private void deletePassword ()
 	{
-		Item newNote = items.get ( pressedItemIndex );
-		newNote.setIsProtected (false);
+		ItemInterface newNote = items.get ( pressedItemIndex );
+		//newNote.setIsProtected (false);
 
 		addAndSortItems ();
 
@@ -608,7 +614,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		}
 
 		@Override
-		public void showChangeTitleDialog (final ItemListPresenter.OnDialogActionListener dialogListener)
+		public void showChangeTitleDialog (final DialogActionsListener dialogListener)
 		{
 			AlertDialog.Builder builder = new AlertDialog.Builder ( ItemListActivity.this );
 
@@ -661,7 +667,7 @@ public class ItemListActivity extends ListActivity implements Colors
 
 			mInputMethodManager.toggleSoftInput ( InputMethodManager.SHOW_FORCED, 0 );
 			
-			mDisplayingDialog = changeTitleDialog;
+			showedDialog = changeTitleDialog;
 		}
 
 		@Override
@@ -682,7 +688,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		}
 
 		@Override
-		public void updateItemList ( List <Item> upToDateItems )
+		public void updateItemList ( List <ItemInterface> upToDateItems )
 		{
 			items.clear ();
 			items.addAll ( upToDateItems );
@@ -763,7 +769,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		}
 
 		@Override
-		public void performSlidingAnimation ( ItemListPresenter.OnAnimationEndListener listener )
+		public void performSlidingAnimation ( CompletitionHandler listener )
 		{
 			menuAnimationHandler.performSlidingAnimation ( listener );
 		}
@@ -776,7 +782,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		}
 
 		@Override
-		public void showConfirmDeleteDialog (final ItemListPresenter.OnDialogActionListener dialogListener)
+		public void showConfirmDeleteDialog (final DialogActionsListener dialogListener)
 		{
 			AlertDialog.Builder builder = new AlertDialog.Builder ( ItemListActivity.this );
 			builder.setIcon ( R.drawable.icon_pack_delete );
@@ -801,33 +807,48 @@ public class ItemListActivity extends ListActivity implements Colors
 			AlertDialog dialog = builder.create ();
 			dialog.show ();
 			
-			mDisplayingDialog = dialog;
+			showedDialog = dialog;
 		}
 
 		@Override
-		public void dissmissDialog () { mDisplayingDialog.dismiss (); }
+		public void dissmissDialog () { showedDialog.dismiss (); }
+		
+		@Override
+		public void launchNoteActivity ()
+		{
+		    Intent intent = new Intent(ItemListActivity.this, ViewNoteActivity.class);
+		    startActivity(intent);
+		}
+		
+		@Override
+		public void setRowSize (Preferences.RowSize rowSize)
+		{
+			slideoutMenuInitializer.markRowSize(rowSize);
+			
+			ItemListActivity.this.rowSize = rowSize; 
+		}
+		
+		@Override
+		public void setSortType (Preferences.SortType sortType)
+		{
+			slideoutMenuInitializer.markSortType(sortType);
+		}
 	}
 
-	class NoteAdapter extends ArrayAdapter <Item>
+	class NoteAdapter extends ArrayAdapter <ItemInterface>
 	{
 		private final int NOTE = 0;
 		private final int FOLDER = 1;
 
 		LayoutInflater inflater = getLayoutInflater ();
 
-		NoteAdapter ()
-		{
-			super ( ItemListActivity.this, R.layout.row_note, items );
-		}
+		NoteAdapter () { super ( ItemListActivity.this, R.layout.row_note, items ); }
 
-		public int getCount ()
-		{
-			return items.size ();
-		}
+		public int getCount () { return items.size (); }
 
 		public View getView ( int position, View convertView, ViewGroup parentView )
 		{
-			Item item = items.get ( position );
+			ItemInterface item = items.get ( position );
 
 			int type = getItemViewType ( position );
 
@@ -907,11 +928,11 @@ public class ItemListActivity extends ListActivity implements Colors
 
 					noteViewHolder.title.setTextColor ( Color.parseColor ( blueColor ) );
 					noteViewHolder.date.setTextColor ( Color.parseColor ( blueColor ) );
-					if (rowSize == RowSize.BIG)
+					if (rowSize == Preferences.RowSize.BIG)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.low_priority_note_icon_72 );
-					if (rowSize == RowSize.MEDIUM)
+					if (rowSize == Preferences.RowSize.MEDIUM)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.low_priority_note_icon_64 );
-					if (rowSize == RowSize.SMALL)
+					if (rowSize == Preferences.RowSize.SMALL)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.low_priority_note_icon_56 );
 					break;
 
@@ -919,11 +940,11 @@ public class ItemListActivity extends ListActivity implements Colors
 
 					noteViewHolder.title.setTextColor ( Color.parseColor ( orangeColor ) );
 					noteViewHolder.date.setTextColor ( Color.parseColor ( orangeColor ) );
-					if (rowSize == RowSize.BIG)
+					if (rowSize == Preferences.RowSize.BIG)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.medium_priority_note_icon_72 );
-					if (rowSize == RowSize.MEDIUM)
+					if (rowSize == Preferences.RowSize.MEDIUM)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.medium_priority_note_icon_64 );
-					if (rowSize == RowSize.SMALL)
+					if (rowSize == Preferences.RowSize.SMALL)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.medium_priority_note_icon_56 );
 					break;
 
@@ -931,11 +952,11 @@ public class ItemListActivity extends ListActivity implements Colors
 
 					noteViewHolder.title.setTextColor ( Color.parseColor ( redColor ) );
 					noteViewHolder.date.setTextColor ( Color.parseColor ( redColor ) );
-					if (rowSize == RowSize.BIG)
+					if (rowSize == Preferences.RowSize.BIG)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.high_priority_note_icon_72 );
-					if (rowSize == RowSize.MEDIUM)
+					if (rowSize == Preferences.RowSize.MEDIUM)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.high_priority_note_icon_64 );
-					if (rowSize == RowSize.SMALL)
+					if (rowSize == Preferences.RowSize.SMALL)
 						noteViewHolder.note.setBackgroundResource ( R.drawable.high_priority_note_icon_56 );
 				}
 
@@ -990,7 +1011,7 @@ public class ItemListActivity extends ListActivity implements Colors
 		boolean slideOutMenuIsOn = false;
 		AnimParams animParams = new AnimParams ();
 
-		OnAnimationEndListener mAnimationEndListener;
+		CompletitionHandler mAnimationEndListener;
 
 		View slideoutMenu = findViewById ( R.id.menu );
 
@@ -1018,7 +1039,7 @@ public class ItemListActivity extends ListActivity implements Colors
 			rootView.clearAnimation ();
 		}
 
-		public void performSlidingAnimation ( ItemListPresenter.OnAnimationEndListener listener )
+		public void performSlidingAnimation ( CompletitionHandler listener )
 		{
 			mAnimationEndListener = listener;
 
@@ -1093,6 +1114,7 @@ public class ItemListActivity extends ListActivity implements Colors
 	{
 		public void onItemClick ( AdapterView <?> parent, View view, int position, long id )
 		{
+			/*
 			pressedItemIndex = position;
 
 			if (items.get ( position ).getIsProtected() == true)
@@ -1137,6 +1159,9 @@ public class ItemListActivity extends ListActivity implements Colors
 			}
 			else
 				openEntry ();
+				*/
+
+			mPresenter.onItemClick(position);
 		}
 	}
 
@@ -1183,7 +1208,6 @@ public class ItemListActivity extends ListActivity implements Colors
 			}
 
 			contextMenu.setContentView ( dialogContent );
-			
 			contextMenu.show ();
 
 			return true;
@@ -1244,10 +1268,10 @@ public class ItemListActivity extends ListActivity implements Colors
 		private void connectFolderMenuListeners ()
 		{
 			itemDelete.setOnClickListener ( new OnClickListener ()
-			{ public void onClick ( View v ) { mPresenter.onDelete (itemIndex); contextMenu.dismiss(); } } );
+			{ public void onClick ( View v ) { mPresenter.onDelete (); contextMenu.dismiss(); } } );
 
 			itemChangeTitle.setOnClickListener ( new OnClickListener ()
-			{ public void onClick ( View v ) { mPresenter.onChangeTitle ( itemIndex ); contextMenu.dismiss(); } } );
+			{ public void onClick ( View v ) { mPresenter.onChangeTitle (); contextMenu.dismiss(); } } );
 
 			itemPassword.setOnClickListener ( new OnClickListener ()
 			{ public void onClick ( View v ) { mPresenter.onPassword (); contextMenu.dismiss(); } } );
@@ -1296,28 +1320,28 @@ public class ItemListActivity extends ListActivity implements Colors
 	
 	private class SlideoutMenuInitializer
 	{
-		private ViewGroup mSlideoutMenuSearch;
-		private ViewGroup mSlideoutMenuNewFolder;
-		private ViewGroup mSlideoutMenuSortBydate;
-		private ViewGroup mSlideoutMenuSortAlphabetically;
-		private ViewGroup mSlideoutMenuSortBytype;
-		private ViewGroup mSlideoutMenuViewBigRows;
-		private ViewGroup mSlideoutMenuViewMediumRows;
-		private ViewGroup mSlideoutMenuViewSmallRows;
+		private ViewGroup itemSearch;
+		private ViewGroup itemNewFolder;
+		private ViewGroup itemSortByDate;
+		private ViewGroup itemSortAlphabetically;
+		private ViewGroup itemSortByType;
+		private ViewGroup itemBigRows;
+		private ViewGroup itemMediumRows;
+		private ViewGroup itemSmallRows;
 		
 		private ViewGroup mSortHearder;
 		private ViewGroup mViewHeader;
 		
 		public void setupSlideoutMenu ()
 		{
-			mSlideoutMenuSearch = (ViewGroup) findViewById ( R.id.item_search );
-			mSlideoutMenuNewFolder = (ViewGroup) findViewById ( R.id.item_new_folder );
-			mSlideoutMenuSortBydate = (ViewGroup) findViewById ( R.id.item_sort_by_date );
-			mSlideoutMenuSortAlphabetically = (ViewGroup) findViewById ( R.id.item_sort_alphabetically );
-			mSlideoutMenuSortBytype = (ViewGroup) findViewById ( R.id.item_sort_by_type );
-			mSlideoutMenuViewBigRows = (ViewGroup) findViewById ( R.id.item_view_big_rows );
-			mSlideoutMenuViewMediumRows = (ViewGroup) findViewById ( R.id.item_view_medium_rows );
-			mSlideoutMenuViewSmallRows = (ViewGroup) findViewById ( R.id.item_view_small_rows );
+			itemSearch = (ViewGroup) findViewById ( R.id.item_search );
+			itemNewFolder = (ViewGroup) findViewById ( R.id.item_new_folder );
+			itemSortByDate = (ViewGroup) findViewById ( R.id.item_sort_by_date );
+			itemSortAlphabetically = (ViewGroup) findViewById ( R.id.item_sort_alphabetically );
+			itemSortByType = (ViewGroup) findViewById ( R.id.item_sort_by_type );
+			itemBigRows = (ViewGroup) findViewById ( R.id.item_view_big_rows );
+			itemMediumRows = (ViewGroup) findViewById ( R.id.item_view_medium_rows );
+			itemSmallRows = (ViewGroup) findViewById ( R.id.item_view_small_rows );
 			mSortHearder = (ViewGroup) findViewById(R.id.item_header_sort);
 			mViewHeader = (ViewGroup) findViewById(R.id.item_header_view);
 			
@@ -1325,33 +1349,79 @@ public class ItemListActivity extends ListActivity implements Colors
 			setTexts();
 			setActionListeners();
 		}
+
+		public void markSortType (Preferences.SortType sortType)
+		{
+			ImageView byDatecheckImage = (ImageView) itemSortByDate.findViewById(R.id.checked_image);
+			ImageView byTypecheckImage = (ImageView) itemSortByType.findViewById(R.id.checked_image);
+			ImageView alphabeticallycheckImage = (ImageView) itemSortAlphabetically.findViewById(R.id.checked_image);
+			
+			byDatecheckImage.setVisibility(View.INVISIBLE);
+			byTypecheckImage.setVisibility(View.INVISIBLE);
+			alphabeticallycheckImage.setVisibility(View.INVISIBLE);
+			
+			switch (sortType)
+			{
+			case ALPHABATICALLY:
+				alphabeticallycheckImage.setVisibility(View.VISIBLE);
+				break;
+			case BY_DATE:
+				byDatecheckImage.setVisibility(View.VISIBLE);
+				break;
+			case BY_TYPE:
+				byTypecheckImage.setVisibility(View.VISIBLE);
+			}
+		}
+		
+		public void markRowSize (Preferences.RowSize rowSize)
+		{
+			ImageView checkImageRowsBig = (ImageView) itemBigRows.findViewById(R.id.checked_image);
+			ImageView checkImageRowsMedium = (ImageView) itemMediumRows.findViewById(R.id.checked_image);
+			ImageView checkImageRowsSmall = (ImageView) itemSmallRows.findViewById(R.id.checked_image);
+			
+			checkImageRowsBig.setVisibility(View.INVISIBLE);
+			checkImageRowsMedium.setVisibility(View.INVISIBLE);
+			checkImageRowsSmall.setVisibility(View.INVISIBLE);
+			
+			switch (rowSize)
+			{
+			case BIG:
+				checkImageRowsBig.setVisibility(View.VISIBLE);
+				break;
+			case MEDIUM:
+				checkImageRowsMedium.setVisibility(View.VISIBLE);
+				break;
+			case SMALL:
+				checkImageRowsSmall.setVisibility(View.VISIBLE);
+			}
+		}
 		
 		private void setIcons ()
 		{
 			ImageView cellImage;
 			
-			cellImage = (ImageView) mSlideoutMenuNewFolder.findViewById(R.id.icon);
+			cellImage = (ImageView) itemNewFolder.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.search_64);
 			
-			cellImage = (ImageView) mSlideoutMenuNewFolder.findViewById(R.id.icon);
+			cellImage = (ImageView) itemNewFolder.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.new_folder_64);
 			
-			cellImage = (ImageView) mSlideoutMenuSortBydate.findViewById(R.id.icon);
+			cellImage = (ImageView) itemSortByDate.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.calendar_56);
 			
-			cellImage = (ImageView) mSlideoutMenuSortAlphabetically.findViewById(R.id.icon);
+			cellImage = (ImageView) itemSortAlphabetically.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.type_56);
 			
-			cellImage = (ImageView) mSlideoutMenuSortBytype.findViewById(R.id.icon);
+			cellImage = (ImageView) itemSortByType.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.type_56);
 			
-			cellImage = (ImageView) mSlideoutMenuViewBigRows.findViewById(R.id.icon);
+			cellImage = (ImageView) itemBigRows.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.note_48);
 			
-			cellImage = (ImageView) mSlideoutMenuViewMediumRows.findViewById(R.id.icon);
+			cellImage = (ImageView) itemMediumRows.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.note_40);
 			
-			cellImage = (ImageView) mSlideoutMenuViewSmallRows.findViewById(R.id.icon);
+			cellImage = (ImageView) itemSmallRows.findViewById(R.id.icon);
 			cellImage.setImageResource(R.drawable.note_32);
 		}
 		
@@ -1359,62 +1429,62 @@ public class ItemListActivity extends ListActivity implements Colors
 		{
 			TextView cellText;
 			
-			cellText = (TextView) mSlideoutMenuNewFolder.findViewById(R.id.text);
+			cellText = (TextView) itemNewFolder.findViewById(R.id.text);
 			cellText.setText("New Folder");
 			
-			cellText = (TextView) mSlideoutMenuSearch.findViewById(R.id.text);
+			cellText = (TextView) itemSearch.findViewById(R.id.text);
 			cellText.setText("Search");
 			
 			cellText = (TextView) mSortHearder.findViewById(R.id.text);
 			cellText.setText("Sort");
 			
-			cellText = (TextView) mSlideoutMenuSortAlphabetically.findViewById(R.id.text);
+			cellText = (TextView) itemSortAlphabetically.findViewById(R.id.text);
 			cellText.setText("Alphabetically");
 			
-			cellText = (TextView) mSlideoutMenuSortBydate.findViewById(R.id.text);
+			cellText = (TextView) itemSortByDate.findViewById(R.id.text);
 			cellText.setText("By Date");
 			
-			cellText = (TextView) mSlideoutMenuSortBytype.findViewById(R.id.text);
+			cellText = (TextView) itemSortByType.findViewById(R.id.text);
 			cellText.setText("By Type");
 			
 			cellText = (TextView) mViewHeader.findViewById(R.id.text);
 			cellText.setText("View");
 			
-			cellText = (TextView) mSlideoutMenuViewBigRows.findViewById(R.id.text);
+			cellText = (TextView) itemBigRows.findViewById(R.id.text);
 			cellText.setText("Big Rows");
 			
-			cellText = (TextView) mSlideoutMenuViewMediumRows.findViewById(R.id.text);
+			cellText = (TextView) itemMediumRows.findViewById(R.id.text);
 			cellText.setText("Medium Rows");
 			
-			cellText = (TextView) mSlideoutMenuViewSmallRows.findViewById(R.id.text);
+			cellText = (TextView) itemSmallRows.findViewById(R.id.text);
 			cellText.setText("Small Rows");
 		}
 		
 		private void setActionListeners ()
 		{
-			mSlideoutMenuSearch.setOnClickListener ( new OnClickListener ()
+			itemSearch.setOnClickListener ( new OnClickListener ()
 			{ @Override public void onClick ( View v ) { mPresenter.onSearch (); } } );
 
-			mSlideoutMenuNewFolder.setOnClickListener ( new OnClickListener ()
+			itemNewFolder.setOnClickListener ( new OnClickListener ()
 			{ @Override public void onClick ( View v ) { mPresenter.onNewFolder (); } } );
 
-			mSlideoutMenuSortBydate.setOnClickListener ( new OnClickListener ()
-			{ @Override public void onClick ( View v ) { mPresenter.onSort (); } } );
+			itemSortByDate.setOnClickListener ( new OnClickListener ()
+			{ @Override public void onClick ( View v ) { mPresenter.onSort (Preferences.SortType.BY_DATE); } } );
 
-			mSlideoutMenuSortAlphabetically.setOnClickListener ( new OnClickListener ()
-			{ @Override public void onClick ( View v ) { mPresenter.onSort (); } } );
+			itemSortAlphabetically.setOnClickListener ( new OnClickListener ()
+			{ @Override public void onClick ( View v ) { mPresenter.onSort (Preferences.SortType.ALPHABATICALLY); } } );
 
-			mSlideoutMenuSortBytype.setOnClickListener ( new OnClickListener ()
-			{ @Override public void onClick ( View v ) { mPresenter.onSort (); } } );
+			itemSortByType.setOnClickListener ( new OnClickListener ()
+			{ @Override public void onClick ( View v ) { mPresenter.onSort (Preferences.SortType.BY_TYPE); } } );
 
-			mSlideoutMenuViewBigRows.setOnClickListener ( new OnClickListener ()
-			{ @Override public void onClick ( View v ) { mPresenter.onChangeItemSize (); } } );
+			itemBigRows.setOnClickListener ( new OnClickListener ()
+			{ @Override public void onClick ( View v ) { mPresenter.onChangeItemSize (Preferences.RowSize.BIG); } } );
 
-			mSlideoutMenuViewMediumRows.setOnClickListener ( new OnClickListener ()
-			{ @Override public void onClick ( View v ) { mPresenter.onChangeItemSize (); } } );
+			itemMediumRows.setOnClickListener ( new OnClickListener ()
+			{ @Override public void onClick ( View v ) { mPresenter.onChangeItemSize (Preferences.RowSize.MEDIUM); } } );
 
-			mSlideoutMenuViewSmallRows.setOnClickListener ( new OnClickListener ()
-			{ @Override public void onClick ( View v ) { mPresenter.onChangeItemSize (); } } );
+			itemSmallRows.setOnClickListener ( new OnClickListener ()
+			{ @Override public void onClick ( View v ) { mPresenter.onChangeItemSize (Preferences.RowSize.SMALL); } } );
 		}
 	}
 }

@@ -1,12 +1,15 @@
 package structures;
 
+import logic.Preferences;
 import android.util.Log;
-import interfaces.ItemDataSource;
+import interfaces.ItemInterface;
 
-public class Item implements ItemDataSource
+public class Item implements ItemInterface, Comparable<Item>
 {
     //public enum Priority {NORMAL, HIGH, VERY_HIGH};
 	private final String TAG = Item.class.getName();
+	
+	private static Preferences.SortType sortType;
     
     public static final int PRIORITY_NORMAL = 0;
     public static final int PRIORITY_HIGHT = 1;
@@ -26,7 +29,7 @@ public class Item implements ItemDataSource
     private int notesInside = -1;
     
     /**
-     * To protect our data getter functions return copies of instance variables
+     * To protect data getter functions return copies of instance variables
      */
     
     public Type getType()
@@ -178,4 +181,63 @@ public class Item implements ItemDataSource
 		this.notesInside = notesInside;
 	}
 	
+	public static void setSortType (Preferences.SortType sortType) { Item.sortType = sortType; }
+	
+public int compareTo(Item comparedItem)
+{
+	int result;
+	
+	switch (sortType)
+	{
+	case BY_DATE:
+
+		result = this.date.compareTo(comparedItem.getDate());
+		if (result == 0)
+			return 0;
+		else if (result < 0)
+			return +1;
+		else
+			return -1;
+
+	case ALPHABATICALLY:
+		
+		result = this.title.toLowerCase().compareTo(comparedItem.getTitle().toLowerCase());
+		if (result == 0)
+			return 0;
+		else if (result > 0)
+			return +1;
+		else
+			return -1;
+		
+	case BY_TYPE:
+		
+		if(this.type == Type.FOLDER && comparedItem.getType() == Type.FOLDER)
+			return -2;
+		else if(this.type == Type.FOLDER && comparedItem.getType() == Type.FOLDER)
+			return +2;
+		else if(this.type == Type.FOLDER && comparedItem.getType() == Type.FOLDER)
+		{
+			result = this.date.compareTo(comparedItem.getDate());
+			if(result == 0)
+				return 0;
+			if(result > 0)
+				return -1;
+			if(result < 0)
+				return +1;
+		}
+		else if(this.type == Type.FOLDER && comparedItem.getType() == Type.FOLDER)
+		{
+			result = this.date.compareTo(comparedItem.getDate());
+			if(result == 0)
+				return 0;
+			if(result > 0)
+				return -1;
+			if(result < 0)
+				return +1;
+		}
+		
+	default:
+		return 0;
+	}
+}
 }

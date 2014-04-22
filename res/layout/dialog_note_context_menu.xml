@@ -13,25 +13,25 @@
             android:id="@+id/item_delete"
             layout="@layout/context_menu_row" />
         
-        <include layout="@layout/line" />
+        <include layout="@layout/line_horizontal" />
 
         <include
             android:id="@+id/item_change_title"
             layout="@layout/context_menu_row" />
         
-        <include layout="@layout/line" />
+        <include layout="@layout/line_horizontal" />
 
         <include
             android:id="@+id/item_send"
             layout="@layout/context_menu_row" />
         
-        <include layout="@layout/line" />
+        <include layout="@layout/line_horizontal" />
 
         <include
             android:id="@+id/item_set_delete_password"
             layout="@layout/context_menu_row" />
         
-        <include layout="@layout/line" />
+        <include layout="@layout/line_horizontal" />
 
         <include
             android:id="@+id/item_set_priority"

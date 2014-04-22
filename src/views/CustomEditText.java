@@ -11,6 +11,9 @@ import android.widget.EditText;
 
 public class CustomEditText extends EditText
 {
+	//This number is used to distinguish views when there is more than one of them on single parent view
+	private int TAG = 1;
+	
     private Rect mRect;
     private Paint mPaint;
 
@@ -36,7 +39,7 @@ public class CustomEditText extends EditText
     public boolean onKeyPreIme(int keyCode, KeyEvent event)
     {
 	if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) 
-	    mDelegate.backPressed();
+	    mDelegate.onBackPressed(this);
 
 	return super.dispatchKeyEvent(event);
     }
@@ -61,12 +64,14 @@ public class CustomEditText extends EditText
 	super.onDraw(canvas);
     }
     
+    public void setTag (int tag) {  this.TAG = tag; }
+    
     public void setDelegate (CustomEditTextDelegate delegate) { mDelegate = delegate; }
 
     public void enableLines (boolean drawLines) { mDrawLines = drawLines; }
     
     public interface CustomEditTextDelegate
     {
-	public void backPressed ();
+    	public void onBackPressed (CustomEditText sender);
     }
 }

@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="activities.NoteActivity"
+            android:name="activities.CreateNoteActivity"
             android:label="@string/title_activity_create_note" >
         </activity>
         <activity
@@ -43,6 +43,11 @@
         <activity
             android:name="activities.ExitActivity"
             android:label="@string/title_activity_exit" >
+        </activity>
+        <activity
+            android:name="activities.ViewNoteActivity"
+            android:label="View Note Activity"
+            android:theme="@android:style/Theme.NoTitleBar"  >
         </activity>
     </application>
 

@@ -1,82 +1,88 @@
 package presenters;
 
+import interfaces.CompletitionHandler;
+import interfaces.DialogActionsListener;
+import interfaces.ItemInterface;
+
 import java.util.List;
 
-import structures.Item;
-
 import logic.ItemsManager;
+import logic.Preferences;
+import structures.Item;
 
 public class ItemListPresenter
 {
 	private IPresenterListener mView;
 	private ItemsManager mItemsManager = ItemsManager.getInstance ();
-
+	private Preferences preferences = new Preferences ();
+	
 	public ItemListPresenter (IPresenterListener view)
 	{
 		mView = view;
-		mView.updateItemList ( mItemsManager.getItems () );
+		mView.updateItemList ( mItemsManager.getItemsToDisplay () );
+		mView.setRowSize(preferences.getRowSize());
+		mView.setSortType(preferences.getSortType());
 	}
 	
-	public void selectItem (int index) { mItemsManager.selectNote(index); }
+	public void selectItem (int index) { mItemsManager.selectItem(index); }
 
-	public List <Item> getItems ()
+	public List <ItemInterface> getItems ()
 	{
-		return mItemsManager.getItems ();
+		return mItemsManager.getItemsToDisplay ();
 	}
 
 	public void onSearch ()
 	{
-		mView.performSlidingAnimation ( new OnAnimationEndListener ()
+		mView.performSlidingAnimation ( new CompletitionHandler ()
 		{
-			public void completeAction ()
-			{
-				mView.enterSearchMode ();
-			}
+			public void completeAction () { mView.enterSearchMode (); }
 		} );
 	}
 
 	public void onNewFolder ()
 	{
-		mView.performSlidingAnimation ( new OnAnimationEndListener ()
+		mView.performSlidingAnimation ( new CompletitionHandler ()
+		{
+			public void completeAction () { mView.showNewFolderDialog (); }
+		} );
+	}
+
+	public void onSort (final Preferences.SortType sortType)
+	{
+		mView.performSlidingAnimation ( new CompletitionHandler ()
 		{
 			public void completeAction ()
 			{
-				mView.showNewFolderDialog ();
+				mItemsManager.sortItems(sortType);
+				mView.setSortType(sortType);
+				mView.updateItemList ( mItemsManager.getItemsToDisplay () );
+				preferences.setSortType(sortType);
 			}
 		} );
 	}
 
-	public void onSort ()
+	public void onChangeItemSize (final Preferences.RowSize rowSize)
 	{
-		mView.performSlidingAnimation ( new OnAnimationEndListener ()
+		mView.performSlidingAnimation ( new CompletitionHandler ()
 		{
 			public void completeAction ()
 			{
-				mView.updateItemList ( mItemsManager.getItems () );
-			}
-		} );
-	}
-
-	public void onChangeItemSize ()
-	{
-		mView.performSlidingAnimation ( new OnAnimationEndListener ()
-		{
-			public void completeAction ()
-			{
-				mView.updateItemList ( mItemsManager.getItems () );
+				mView.setRowSize(rowSize);
+				mView.updateItemList ( mItemsManager.getItemsToDisplay () );
+				preferences.setRowSize(rowSize);
 			}
 		} );
 	}
 	
-	public void onDelete (final int itemIndex)
+	public void onDelete ()
 	{
-		mView.showConfirmDeleteDialog ( new OnDialogActionListener()
+		mView.showConfirmDeleteDialog ( new DialogActionsListener()
 		{
 			@Override
 			public void confirmAction (String message)
 			{
-				mItemsManager.deleteItem ( itemIndex );
-				mView.updateItemList ( mItemsManager.getItems () );
+				mItemsManager.deleteSelectedItem ();
+				mView.updateItemList ( mItemsManager.getItemsToDisplay () );
 				mView.showMessage ("Note deleted");
 			}
 			
@@ -88,14 +94,14 @@ public class ItemListPresenter
 		} );
 	}
 
-	public void onConfirmDelete ( int itemIndex )
+	public void onConfirmDelete ()
 	{
 
 	}
 
-	public void onChangeTitle ( int itemIndex )
+	public void onChangeTitle ()
 	{
-		mView.showChangeTitleDialog ( new OnDialogActionListener()
+		mView.showChangeTitleDialog ( new DialogActionsListener()
 		{
 			@Override
 			public void confirmAction (String message)
@@ -118,10 +124,10 @@ public class ItemListPresenter
 		mView.showPasswordDialog ();
 	}
 
-	public void onPasswordConfirm ( boolean status, int itemIndex )
+	public void onPasswordConfirm ()
 	{
-		mItemsManager.changeSecureStatus ( status, itemIndex );
-		mView.updateItemList ( mItemsManager.getItems () );
+		mItemsManager.changeItemSecurityStatus ();
+		mView.updateItemList ( mItemsManager.getItemsToDisplay () );
 	}
 
 	public void onChangePriority ()
@@ -129,20 +135,29 @@ public class ItemListPresenter
 		mView.showSetPriorityDialog ();
 	}
 
-	public void onSetPriority ( int priority, int itemIndex )
+	public void onSetPriority ( int priority)
 	{
-		mItemsManager.setPriority ( priority, itemIndex );
-	}
-
-	public interface OnAnimationEndListener
-	{
-		public void completeAction ();
+		mItemsManager.setSelectedItemPriority ( priority );
 	}
 	
-	public interface OnDialogActionListener
+	public void onItemClick (int index)
 	{
-		public void confirmAction (String message);
-		public void cancelAction ();
+		/*
+		boolean isNote = false;		//just because it asks for initialization
+		mItemsManager.openItem(index, isNote);
+		
+		if (isNote)
+			mView.launchNoteActivity();
+		else
+			mView.updateItemList(mItemsManager.getItems());
+			*/
+		
+		mItemsManager.selectItem(index);
+		
+		if (mItemsManager.getSelectedItem().getType() == Item.Type.NOTE)
+			mView.launchNoteActivity();
+		else
+			mView.updateItemList(mItemsManager.getItemsToDisplay());
 	}
 
 	public interface IPresenterListener
@@ -151,9 +166,9 @@ public class ItemListPresenter
 
 		public void showNewFolderDialog ();
 
-		public void updateItemList ( List <Item> items );
+		public void updateItemList ( List <ItemInterface> items );
 
-		public void showChangeTitleDialog (OnDialogActionListener dialogListener);
+		public void showChangeTitleDialog (DialogActionsListener dialogListener);
 
 		public void dispatchText ( String text );
 
@@ -161,12 +176,18 @@ public class ItemListPresenter
 
 		public void showSetPriorityDialog ();
 
-		public void performSlidingAnimation ( OnAnimationEndListener listener );
+		public void performSlidingAnimation ( CompletitionHandler listener );
 		
 		public void showMessage (String message);
 		
-		public void showConfirmDeleteDialog (OnDialogActionListener dialogListener);
+		public void showConfirmDeleteDialog (DialogActionsListener dialogListener);
 		
 		public void dissmissDialog ();
+		
+		public void launchNoteActivity ();
+		
+		public void setRowSize (Preferences.RowSize rowSize);
+		
+		public void setSortType (Preferences.SortType sortType);
 	}
 }
