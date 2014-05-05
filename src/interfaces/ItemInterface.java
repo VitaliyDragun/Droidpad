@@ -1,6 +1,6 @@
 package interfaces;
 
-import structures.Item.Type;
+import logic.Item.Type;
 
 public interface ItemInterface 
 {

@@ -45,7 +45,7 @@ public class ExitActivity extends Activity
 			View dialogView = inflater.inflate(R.layout.dialog_ask_before_exit, null);
 			
 			//Set listener on check box to know if it is on, if so, mark that preferences where updated
-			CheckBox checkBox = (CheckBox)dialogView.findViewById(R.id.do_not_ask_again_checkbox);
+			CheckBox checkBox = (CheckBox)dialogView.findViewById(R.id.checkbox_do_not_ask_again);
 			checkBox.setOnCheckedChangeListener(
 					new CompoundButton.OnCheckedChangeListener() {
 				
@@ -71,7 +71,7 @@ public class ExitActivity extends Activity
 			});
 			
 			builder.setTitle("Are you sure?".toString());
-			builder.setIcon(R.drawable.exit_icon_48);
+			builder.setIcon(R.drawable.power_button_small);
 			builder.setView(dialogView);
 			builder.setPositiveButton("Yes".toString(), new DialogInterface.OnClickListener() {
 				

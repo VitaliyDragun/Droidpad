@@ -8,19 +8,17 @@
     android:paddingLeft="5dp" >
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/imageview_icon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:src="@drawable/note_40" />
+        android:src="@drawable/note_low_priority_very_very_small" />
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_weight="2.1"
         android:text="Big Rows "
@@ -29,23 +27,21 @@
         android:textStyle="italic" />
 
     <ImageView
-        android:id="@+id/checked_image"
+        android:id="@+id/imageview_checkmark"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_weight="1.1"
-        android:src="@drawable/check_mark"
+        android:src="@drawable/check_mark_2"
         android:visibility="invisible" />
 
     <ImageView
-        android:id="@+id/padding_image"
+        android:id="@+id/imageview_for_padding"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_weight="0.8"
-        android:src="@drawable/notepad_48"
+        android:src="@drawable/note_low_priority_small"
         android:visibility="invisible" />
 
 </LinearLayout>

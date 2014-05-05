@@ -9,7 +9,7 @@
         android:targetSdkVersion="9" />
 
     <application
-        android:name="vitaliy.dragun.droidpad_2nd_edition.MyApplication"
+        android:name="vitaliy.dragun.droidpad.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -29,7 +29,7 @@
             android:label="@string/title_activity_create_note" >
         </activity>
         <activity
-            android:name="activities.ItemListActivity"
+            android:name="activities.ItemsActivity"
             android:label="@string/title_activity_items_list" >
         </activity>
         <activity
@@ -45,7 +45,7 @@
             android:label="@string/title_activity_exit" >
         </activity>
         <activity
-            android:name="activities.ViewNoteActivity"
+            android:name="activities.OpenNoteActivity"
             android:label="View Note Activity"
             android:theme="@android:style/Theme.NoTitleBar"  >
         </activity>

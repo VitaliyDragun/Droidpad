@@ -1,10 +1,10 @@
 package activities;
 
+import custom_views.CustomEditText;
 import interfaces.DialogActionsListener;
-import presenters.NotePresenter;
-import presenters.NotePresenter.INoteView;
-import views.CustomEditText;
-import vitaliy.dragun.droidpad_2nd_edition.Colors;
+import presenters.CreateNotePresenter;
+import presenters.CreateNotePresenter.INoteView;
+import vitaliy.dragun.droidpad.Colors;
 import vitaliy.dragun.droidpad_2nd_edition.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 public class CreateNoteActivity extends Activity implements Colors
 {
-	private NotePresenter mPresenter;
+	private CreateNotePresenter mPresenter;
 
 	protected CustomEditText mCustomEditTextAddTitle;
 	protected TextView mTextTitle;
@@ -50,7 +50,7 @@ public class CreateNoteActivity extends Activity implements Colors
 	private ImageButton mImageButtonBackground;
 	protected ImageButton mImageButtonDone;
 
-	private ViewGroup mViewGroupRootLayout;
+	protected ViewGroup mViewGroupRootLayout;
 
 	private Toast mToast;
 	
@@ -58,9 +58,9 @@ public class CreateNoteActivity extends Activity implements Colors
 
 	private PresenterListener mPresenterListener;
 
-	protected NotePresenter getPresenter ()
+	protected CreateNotePresenter getPresenter ()
 	{
-		return new NotePresenter (getPresenterListener());
+		return new CreateNotePresenter (getPresenterListener());
 	}
 	
 	protected PresenterListener getPresenterListener ()
@@ -173,8 +173,6 @@ public class CreateNoteActivity extends Activity implements Colors
 	public void onPause()
 	{
 		super.onPause();
-
-		mPresenterListener.setEditTitleMode(false);
 	}
 
 
@@ -198,29 +196,23 @@ public class CreateNoteActivity extends Activity implements Colors
 			mCustomEditTextNote.enableLines (drawLines);
 			mCustomEditTextNote.invalidate();
 		}
-
+		
 		@Override
 		public void setFullscreen (boolean fullscreen)
 		{
 			if (fullscreen)
 			{
-				mViewGroupTopBar.setVisibility(View.VISIBLE);
-				mViewGroupButtomBar.setVisibility(View.VISIBLE);
-
-				mToast.setText("fullscreen mode: off");
-				mToast.setDuration(Toast.LENGTH_SHORT);
-				mToast.setGravity(Gravity.CENTER, 0, -150);
-				mToast.show();
+				mViewGroupTopBar.setVisibility(View.GONE);
+				mViewGroupButtomBar.setVisibility(View.GONE);
+				
+				showTextMessage("Fullscreen mode ON");
 			}
 			else
 			{
-				mViewGroupTopBar.setVisibility(View.GONE);
-				mViewGroupButtomBar.setVisibility(View.GONE);
+				mViewGroupTopBar.setVisibility(View.VISIBLE);
+				mViewGroupButtomBar.setVisibility(View.VISIBLE);
 
-				mToast.setText("fullscreen mode: on");
-				mToast.setDuration(Toast.LENGTH_SHORT);
-				mToast.setGravity(Gravity.CENTER, 0, -150);
-				mToast.show();
+				showTextMessage("Fullscreen mode OFF");
 			}
 		}
 
@@ -244,13 +236,13 @@ public class CreateNoteActivity extends Activity implements Colors
 
 			if (fullscreenMode)
 			{
-				mViewGroupTopBar.setVisibility(View.VISIBLE);
-				mViewGroupButtomBar.setVisibility(View.VISIBLE);
+				mViewGroupTopBar.setVisibility(View.GONE);
+				mViewGroupButtomBar.setVisibility(View.GONE);
 			}
 			else
 			{
-				mViewGroupTopBar.setVisibility(View.GONE);
-				mViewGroupButtomBar.setVisibility(View.GONE);
+				mViewGroupTopBar.setVisibility(View.VISIBLE);
+				mViewGroupButtomBar.setVisibility(View.VISIBLE);
 			}
 		}
 		
@@ -301,15 +293,9 @@ public class CreateNoteActivity extends Activity implements Colors
 			}
 		}
 		
-		public String getTitle ()
-		{
-			return "Some title";
-		}
+		public String getTitle () { return mCustomEditTextAddTitle.getText().toString(); }
 		
-		public String getNote ()
-		{
-			return "Note";
-		}
+		public String getNote () { return mCustomEditTextNote.getText().toString(); }
 		
 		public void clearView ()
 		{
@@ -325,7 +311,7 @@ public class CreateNoteActivity extends Activity implements Colors
 		public void showDeleteDialog (final DialogActionsListener dialogListener)
 		{
 			AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
-			builder.setIcon(R.drawable.icon_pack_delete);
+			builder.setIcon(R.drawable.cross_medium);
 			builder.setTitle("Delete note?").setPositiveButton("Yes", new DialogInterface.OnClickListener()
 			{ public void onClick(DialogInterface dialog, int whichButton) { dialogListener.confirmAction(null); } });
 

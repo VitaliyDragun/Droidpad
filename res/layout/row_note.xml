@@ -5,28 +5,28 @@
      >
 
     <FrameLayout
-        android:id="@+id/note_image_layout"
+        android:id="@+id/layout_note_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:background="@drawable/low_priority_note_icon_72"
+        android:background="@drawable/note_low_priority_big"
         android:paddingLeft="6dp" >
 
         <ImageView
-            android:id="@+id/keys"
+            android:id="@+id/imageview_lock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginRight="2.5dp"
-            android:src="@drawable/lock" />
+            android:src="@drawable/lock_small" />
     </FrameLayout>
 
     <TextView
-        android:id="@+id/note_title"
+        android:id="@+id/text_note_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/note_image_layout"
+        android:layout_toRightOf="@id/layout_note_icon"
         android:text="some"
         android:textColor="#0066cc"
         android:textSize="22sp"
@@ -34,7 +34,7 @@
         android:singleLine="true" />
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/text_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

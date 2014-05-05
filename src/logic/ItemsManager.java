@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import structures.Item;
-import structures.Item.Type;
-import vitaliy.dragun.droidpad_2nd_edition.MyApplication;
+import logic.Item.Type;
+
+import vitaliy.dragun.droidpad.MyApplication;
 import database.ItemsDatabase;
 
 public class ItemsManager
@@ -22,7 +22,7 @@ public class ItemsManager
 	public static String selectedFolder = rootFolderTitle;
 
 	private List<Item> allItems = new ArrayList<Item>();
-	private List<Item> itemsToDisplay = new ArrayList<Item>();
+	private List<Item> itemsInSelectedFolder = new ArrayList<Item>();
 	
 	private Item currentFolder;		//If null then we are in root folder
 
@@ -45,21 +45,24 @@ public class ItemsManager
 
 	private ItemsManager()
 	{
+		currentFolder = new Item();
+		currentFolder.setTitle("My Notes");
+		
 		notesDataSource = new ItemsDatabase( MyApplication.getAppContext() );
 		
 		notesDataSource.open();
 		
 		allItems.addAll( notesDataSource.getAllNotes() );
 
-		itemsToDisplay = allItems;
+		itemsInSelectedFolder = allItems;
 	}
 	
-	public List<ItemInterface> getItemsToDisplay ()
+	public List<ItemInterface> getItemsInSelectedFolder ()
 	{
 		List <ItemInterface> copy = new ArrayList<ItemInterface> ();
 		
-		for (int i = 0; i < itemsToDisplay.size(); i++)
-			copy.add(itemsToDisplay.get(i));
+		for (int i = 0; i < itemsInSelectedFolder.size(); i++)
+			copy.add(itemsInSelectedFolder.get(i));
 		
 		return copy;
 	}
@@ -84,14 +87,14 @@ public class ItemsManager
 		{
 			if ( allItems.get(i).getTitle().toLowerCase().startsWith( startText.toLowerCase() ) )
 				if ( allItems.get(i).getLocationFolder().equals(rootFolderTitle) )
-					itemsToDisplay.add( allItems.get( i ) );
+					itemsInSelectedFolder.add( allItems.get( i ) );
 				else
 				{
 					String itemFolderTitle = allItems.get(i).getLocationFolder();
 
 					for ( int y = 0; y < allItems.size(); y++ )
 						if ( allItems.get( y ).getTitle().equals( itemFolderTitle ) && allItems.get( y ).getIsProtected() != true )
-							itemsToDisplay.add( allItems.get(i) );
+							itemsInSelectedFolder.add( allItems.get(i) );
 				}
 		}
 	}
@@ -106,6 +109,7 @@ public class ItemsManager
 		Item newFolder = new Item();
 
 		newFolder.setTitle(title);
+		newFolder.setNote("No note");
 		newFolder.setType(Type.FOLDER);
 		newFolder.setLocationFolder(currentFolder.getTitle());
 		newFolder.setIsTitleAdded(true);
@@ -116,9 +120,14 @@ public class ItemsManager
 		SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		String currentDate = formatter.format(new Date());
 		newFolder.setDate(currentDate);
+		
+		notesDataSource.createNote(newFolder);
+		
+		itemsInSelectedFolder.add(newFolder);
+		
 	}
 
-	public boolean createNote(String title, String text)
+	public boolean createNote(String title, String note)
 	{
 		Item newNote = new Item();
 
@@ -126,16 +135,16 @@ public class ItemsManager
 			newNote.setTitle(title);
 		else
 		{	
-			if(text.indexOf("\n") != -1)
-				text = text.substring(0, text.indexOf("\n"));
+			if(note.indexOf("\n") != -1)
+				note = note.substring(0, note.indexOf("\n"));
 
-			if(text.length() > 30)
-				text = text.substring(0, 29);
+			if(note.length() > 30)
+				note = note.substring(0, 29);
 
-			newNote.setNote(text);
+			newNote.setTitle(note);
 		}
 
-		newNote.setNote(text);
+		newNote.setNote(note);
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String currentDate = formatter.format(new Date());
@@ -148,15 +157,9 @@ public class ItemsManager
 
 		if ( isTitleUnique( newNote.getTitle() ) )
 		{
-			for ( int i = 0; i < allItems.size(); i++ )
-			{
-				if ( allItems.get(i).getTitle().equals(selectedFolder) )
-				{
-
-				}
-			}
-
 			notesDataSource.createNote( newNote );
+			
+			itemsInSelectedFolder.add(newNote);
 
 			return true;
 		}
@@ -166,7 +169,7 @@ public class ItemsManager
 
 	public void deleteSelectedItem()
 	{
-		itemsToDisplay.remove(selectedItem);
+		itemsInSelectedFolder.remove(selectedItem);
 		allItems.remove(selectedItem);
 		
 		notesDataSource.deleteNote ( selectedItem );
@@ -206,7 +209,7 @@ public class ItemsManager
 
 	public void openItem (int index, boolean isNote)
 	{
-		Item itemToOpen = itemsToDisplay.get(index);
+		Item itemToOpen = itemsInSelectedFolder.get(index);
 		if (itemToOpen.getType() == Item.Type.NOTE)
 		{
 			selectedItem = itemToOpen;
@@ -224,10 +227,10 @@ public class ItemsManager
 
 	}
 
-	public void sortItems (Preferences.SortType sortType)
+	public void sortItems (PreferencesManager.SortType sortType)
 	{
 		Item.setSortType(sortType);
-		Collections.sort(itemsToDisplay);
+		Collections.sort(itemsInSelectedFolder);
 	}
 
 	public void updateSelectedNote (String updatedNote)
@@ -243,33 +246,36 @@ public class ItemsManager
 	public void selectItem (int index)
 	{
 		selectedItemIndex = index;
-		selectedItem =  itemsToDisplay.get(index);
+		selectedItem =  itemsInSelectedFolder.get(index);
 		
 		if (selectedItem.getType() == Item.Type.FOLDER)
 		{
-			itemsToDisplay.removeAll(itemsToDisplay);
+			itemsInSelectedFolder.removeAll(itemsInSelectedFolder);
 			for (Item item : allItems)
 				if ( item.getLocationFolder ().equals (currentFolder.getTitle() ) )
-					itemsToDisplay.add(item);
+					itemsInSelectedFolder.add(item);
 		}
 	}
 	
+	//Returns false if next note can't be selected
 	public boolean selectNextNote ()
 	{
-		for (int i = selectedItemIndex + 1; i < itemsToDisplay.size(); i++)
+		for (int i = selectedItemIndex + 1; i < itemsInSelectedFolder.size(); i++)
 		{
 			if (selectedItem.getType() == Item.Type.FOLDER || selectedItem.getIsProtected() == true)
 				continue;
 			else
 			{
 				selectedItemIndex = i;
-				selectedItem = itemsToDisplay.get(selectedItemIndex);
+				selectedItem = itemsInSelectedFolder.get(selectedItemIndex);
+				
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	//Returns false when previous note can't be selected
 	public boolean selectPreviousNote ()
 	{
 		for (int i = selectedItemIndex - 1; i >= 0; i--)
@@ -279,10 +285,18 @@ public class ItemsManager
 			else
 			{
 				selectedItemIndex = i;
-				selectedItem = itemsToDisplay.get(selectedItemIndex);
+				selectedItem = itemsInSelectedFolder.get(selectedItemIndex);
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public void updateSelectedItem (String title, String note)
+	{
+		selectedItem.setTitle(title);
+		selectedItem.setNote(note);
+		
+		notesDataSource.updateNote(selectedItem);
 	}
 }

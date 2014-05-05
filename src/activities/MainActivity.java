@@ -41,35 +41,35 @@ public class MainActivity extends TabActivity
 
 		TabSpec newNoteSpec = tabHost.newTabSpec (TAB_CREATE_NOTE);
 		View newNoteView = getLayoutInflater().inflate(R.layout.tab_view, null);
-		((ImageView)newNoteView.findViewById(R.id.tab_icon)).setImageResource(R.drawable.icon_pack_add_note);
+		((ImageView)newNoteView.findViewById(R.id.imageview_icon)).setImageResource(R.drawable.plus_1);
 		newNoteSpec.setIndicator(newNoteView);
 		Intent newNoteIntent = new Intent(this, CreateNoteActivity.class);
 		newNoteSpec.setContent(newNoteIntent);
 
 		TabSpec manageSpec = tabHost.newTabSpec (TAB_ITEM_LIST);
 		View noteListView = getLayoutInflater().inflate(R.layout.tab_view, null);
-		((ImageView)noteListView.findViewById(R.id.tab_icon)).setImageResource(R.drawable.icon_pack_notes);
+		((ImageView)noteListView.findViewById(R.id.imageview_icon)).setImageResource(R.drawable.pages);
 		manageSpec.setIndicator(noteListView);
-		Intent manageIntent = new Intent(this, ItemListActivity.class);
+		Intent manageIntent = new Intent(this, ItemsActivity.class);
 		manageSpec.setContent(manageIntent);
 
 		TabSpec preferencesSpec = tabHost.newTabSpec (TAB_PREFERENCES);
 		View settingsView = getLayoutInflater().inflate(R.layout.tab_view, null);
-		((ImageView)settingsView.findViewById(R.id.tab_icon)).setImageResource(R.drawable.icon_pack_settings);
+		((ImageView)settingsView.findViewById(R.id.imageview_icon)).setImageResource(R.drawable.gear);
 		preferencesSpec.setIndicator(settingsView);
 		Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
 		preferencesSpec.setContent(preferencesIntent);
 
 		TabSpec helpSpec = tabHost.newTabSpec (TAB_HELP);
 		View helpView = getLayoutInflater().inflate(R.layout.tab_view, null);
-		((ImageView)helpView.findViewById(R.id.tab_icon)).setImageResource(R.drawable.icon_pack_help3);
+		((ImageView)helpView.findViewById(R.id.imageview_icon)).setImageResource(R.drawable.question_sign);
 		helpSpec.setIndicator(helpView);
 		Intent helpIntent = new Intent(this, HelpActivity.class);
 		helpSpec.setContent(helpIntent);
 
 		TabSpec exitSpec = tabHost.newTabSpec (TAB_EXIT);
 		View exitView = getLayoutInflater().inflate(R.layout.tab_view, null);
-		((ImageView)exitView.findViewById(R.id.tab_icon)).setImageResource(R.drawable.icon_pack_exit);
+		((ImageView)exitView.findViewById(R.id.imageview_icon)).setImageResource(R.drawable.power_button_big);
 		exitSpec.setIndicator (exitView);
 		Intent exitIntent = new Intent (this, ExitActivity.class);
 		exitSpec.setContent (exitIntent);
@@ -99,7 +99,6 @@ public class MainActivity extends TabActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		getMenuInflater().inflate (R.menu.main, menu);
 		return true;
 	}
 

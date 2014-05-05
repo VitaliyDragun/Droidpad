@@ -31,7 +31,7 @@ public class HelpActivity extends Activity {
 		//Initialize the toast
 		toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 
-		mExpandableList = (ExpandableListView)findViewById(R.id.expandable_list);
+		mExpandableList = (ExpandableListView)findViewById(R.id.help_list);
 		 
         ArrayList<String> arrayParents = new ArrayList<String>();
         //ArrayList<String> arrayChildren = new ArrayList<String>();
@@ -127,7 +127,7 @@ public class HelpActivity extends Activity {
 	 
 	        view = inflater.inflate(R.layout.expandable_list_parent_item, viewGroup,false);
 	 
-	        TextView textView = (TextView) view.findViewById(R.id.list_item_text_view);
+	        TextView textView = (TextView) view.findViewById(R.id.text_row_title);
 	        //"i" is the position of the parent/group in the list
 	        textView.setText(getGroup(i).toString());
 	 
@@ -140,17 +140,17 @@ public class HelpActivity extends Activity {
 	    public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
 	    	
 	    	if(i == 0){
-	    		view = inflater.inflate(R.layout.expandable_list_instructions, viewGroup,false);
+	    		view = inflater.inflate(R.layout.expandable_list_item_instructions, viewGroup,false);
 	    		return view;
 	    	}
 	    	
 	    	if(i == 1){
-	    		view = inflater.inflate(R.layout.expandable_list_version_log, viewGroup, false);
+	    		view = inflater.inflate(R.layout.expandable_list_item_version_log, viewGroup, false);
 	    		return view;
 	    	}
 	    	
 	    	if(i == 2){
-	    		view = inflater.inflate(R.layout.expandable_list_about, viewGroup, false);
+	    		view = inflater.inflate(R.layout.expandable_list_item_about, viewGroup, false);
 	    		return view;
 	    	}
 

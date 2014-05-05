@@ -20,8 +20,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="#4169e1"
-                android:tabStripLeft="@drawable/line"
-                android:tabStripRight="@drawable/line" />
+                android:tabStripLeft="@drawable/line_horizontal"
+                android:tabStripRight="@drawable/line_horizontal" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"

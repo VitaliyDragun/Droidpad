@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="#d3d3d3" >
 
-    <views.CustomPreferenceCategory android:title="General settings" >
+    <custom_views.CustomPreferencesCategory android:title="General settings" >
         <CheckBoxPreference
             android:key="launch_app_with_new_note"
             android:title="Start new note at launch " />
@@ -23,29 +23,29 @@
             android:disableDependentsState="false"
             android:key="enable sound effects"
             android:title="Enable sound effects " />
-    </views.CustomPreferenceCategory>
+    </custom_views.CustomPreferencesCategory>
         
-    <views.CustomPreferenceCategory android:title="Security" >
-        <views.DialogChangePassword
-            android:dialogIcon="@drawable/lock_48"
+    <custom_views.CustomPreferencesCategory android:title="Security" >
+        <custom_views.DialogChangePassword
+            android:dialogIcon="@drawable/lock_big"
             android:key="password"
             android:negativeButtonText="Discard"
             android:positiveButtonText="Change"
             android:summary="Default:1111"
             android:title="Change password " />
-    </views.CustomPreferenceCategory>
-    <views.CustomPreferenceCategory android:title="Backup" >
-        <views.DialogCreateBackup
+    </custom_views.CustomPreferencesCategory>
+    <custom_views.CustomPreferencesCategory android:title="Backup" >
+        <custom_views.DialogCreateBackup
             android:key="create_backup"
             android:negativeButtonText="Discard"
             android:positiveButtonText="Proceed"
             android:title="Create Backup " />
 
-        <views.DialogLoadBackup
+        <custom_views.DialogLoadBackup
             android:key="load_backup"
             android:negativeButtonText="Discard"
             android:positiveButtonText="Proceed"
             android:title="Load Backup " />
-    </views.CustomPreferenceCategory>
+    </custom_views.CustomPreferencesCategory>
 
 </PreferenceScreen>

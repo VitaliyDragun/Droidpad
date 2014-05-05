@@ -3,7 +3,8 @@ package database;
 import java.util.ArrayList;
 import java.util.List;
 
-import structures.Item;
+import logic.Item;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
